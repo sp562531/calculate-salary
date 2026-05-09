@@ -28,7 +28,7 @@ h2 {
 /* layout */
 .row {
   display: grid;
-  grid-template-columns: 85px 1fr 110px;
+  grid-template-columns: 100px 1fr 110px;
   align-items: center;
   gap: 6px;
   margin-top: 8px;
@@ -56,7 +56,7 @@ input {
 }
 
 .input-small {
-  width: 45px;
+  width: 55px;
 }
 
 /* ช่องผลลัพธ์ (อยู่ใน input) */
@@ -138,7 +138,37 @@ button {
   padding-bottom: 6px;
   border-bottom: 1px dashed #ddd;
 }
+.sub-text2 {
+  text-align: center;
+  font-size: 12px;
+  color: #777;
+  margin: 10px 0;
+  padding-bottom: 1px;
+}
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+}
 
+/* hover effect */
+button:hover {
+  opacity: 0.9;
+}
+
+/* กรณีอยากให้ปุ่มไม่ยืดเต็ม */
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+.button-group button {
+  flex: 1;
+}
 </style>
 </head>
 
@@ -217,13 +247,14 @@ button {
 
 <div class="row">
   <div class="label">อื่น ๆ</div>
-  <input type="number" id="other" oninput="updateAll()">
+  <input type="number" id="other"placeholder="เช่น เงินบวก,เบี้ยขยันรายปี" oninput="updateAll()">
   <input class="result-input" id="otherPay" disabled>
 </div>
 
 <div class="total">
 รวมทั้งหมด: <span id="total">0</span> บาท
 </div>
+<div class="sub-text"> </div>
 <h3 style="margin-top:15px;">รายการหัก</h3>
 
 <div class="row">
@@ -252,6 +283,30 @@ button {
   <input class="result-input" id="providentPay" disabled>
 </div>
 
+<div class="row">
+  <div class="label">สหกรณ์</div>
+  <input type="number" id="coopInput" oninput="updateAll()">
+  <input class="result-input" id="coopPay" disabled>
+</div>
+<div class="row">
+  <div class="label">ประกันคู่สมรส</div>
+  <input type="number" id="healthMarriageInput" oninput="updateAll()">
+  <input class="result-input" id="healthMarriagePay" disabled>
+</div>
+
+<div class="row">
+  <div class="label">ทันตกรรม</div>
+  <input type="number" id="healthDentalInput" oninput="updateAll()">
+  <input class="result-input" id="healthDentalPay" disabled>
+</div>
+<div class="row">
+  <div class="label">ค่าสมาชิกสหภาพ</div>
+  <label class="switch">
+    <input type="checkbox" id="unionCheck" onchange="updateAll()">
+    <span class="slider"></span>
+  </label>
+  <input class="result-input" id="unionPay" disabled>
+</div>
 <div class="total">
 หักรวม: <span id="deductTotal">0</span> บาท
 </div>
@@ -259,10 +314,15 @@ button {
 <div class="total">
 สุทธิ: <span id="netTotal">0</span> บาท
 </div>
+<div class="button-group">
+  <button class="clear" onclick="clearData()">ล้างข้อมูล</button>
+  <button class="save" onclick="saveData()">บันทึก</button>
+</div>
+<div class="sub-text2">โปรแกรมคำนวนนี้อาจจะไม่ครอบคลุมรายรับหรือรายการหักทั้งหมด เช่น ภาษี ฌาปนกิจ เงินกู้สหกรณ์ หรือรายการอื่นที่อาจเพิ่มเข้ามาในอนาคต</div>
+</div>
 
 </div>
-<button class="save" onclick="saveData()">บันทึก</button>
-<button class="clear" onclick="clearData()">ล้างข้อมูล</button>
+
 
 <script>
 function convertToDecimal(h,m){
@@ -324,28 +384,42 @@ let deduct20 = (salary / 30) * 0.20 * d20Days;
 // สำรองเลี้ยงชีพ
 let providentRate = +providentRateInput.value || 0;
 
-// ฐานคำนวณ = เงินเดือน - หัก10% - หัก20%
+// หักก่อนคำนวณสำรอง ฐานคำนวณ = เงินเดือน - หัก10% - หัก20%
 let baseForProvident = salary - deduct10 - deduct20;
 
 let provident = baseForProvident * (providentRate / 100);
+let coop = +coopInput.value || 0;
+coopPay.value = format(coop);
+let healthMarriage = +healthMarriageInput.value || 0;
+let healthDental = +healthDentalInput.value || 0;
 
+healthMarriagePay.value = format(healthMarriage);
+healthDentalPay.value = format(healthDental);
 // แสดงผล
 providentPay.value = format(provident);
 // แสดงผล
 deduct10Pay.value = format(deduct10);
 deduct20Pay.value = format(deduct20);
-// ✅ ใส่เพดาน 850 บาท
+// ✅ ใส่เพดาน 875 บาท
 social = Math.min(social, 875);
-
 socialPay.value = format(social);
+let union = 0;
+
+if (unionCheck.checked) {
+  union = salary * 0.12;   // 12% ของเงินเดือน
+  union = Math.min(union, 2500); // ไม่เกิน 2500
+}
+
+unionPay.value = format(union);
 
 // รวมรายการหัก
-let deductTotal = social + deduct10 + deduct20 + provident;
+let deductTotal = social + deduct10 + deduct20 + provident + coop + healthMarriage + healthDental + union;
 // สุทธิ
 let net = total - deductTotal;
 
 deductTotalSpan.innerText = format(deductTotal);
 netTotalSpan.innerText = format(net);
+
 }
 
 const salaryInput = document.getElementById("salary");
@@ -384,6 +458,17 @@ const deduct20DaysInput = document.getElementById("deduct20Days");
 const deduct20Pay = document.getElementById("deduct20Pay");
 const providentRateInput = document.getElementById("providentRate");
 const providentPay = document.getElementById("providentPay");
+const coopInput = document.getElementById("coopInput");
+const coopPay = document.getElementById("coopPay");
+const healthMarriageInput = document.getElementById("healthMarriageInput");
+const healthMarriagePay = document.getElementById("healthMarriagePay");
+
+const healthDentalInput = document.getElementById("healthDentalInput");
+const healthDentalPay = document.getElementById("healthDentalPay");
+
+const unionCheck = document.getElementById("unionCheck");
+const unionPay = document.getElementById("unionPay");
+
 function saveData(){
   localStorage.setItem("salaryApp",JSON.stringify({
     salary:salaryInput.value,
@@ -403,9 +488,12 @@ function saveData(){
     socialRate: socialRateInput.value,
     deduct10Days: deduct10DaysInput.value,
     deduct20Days: deduct20DaysInput.value,
-    providentRate: providentRateInput.value
+    providentRate: providentRateInput.value,
+    coop: coopInput.value,
+    healthMarriage: healthMarriageInput.value,
+    healthDental: healthDentalInput.value,
   }));
-  alert("บันทึกแล้ว ข้อมูลจะถูกบันทึกไว้ในเบราวเซอร์ของเครื่องคุณ หากคุณไม่ล้างแคช ข้อมูลของคุณจะยังคงอยู่ เราจะไม่เก็บข้อมูลของคุณ");
+  alert("บันทึกแล้ว ข้อมูลจะถูกบันทึกไว้ในเบราวเซอร์ของเครื่องคุณ หากคุณไม่ล้างแคช ข้อมูลจะยังคงอยู่และจะปรากฎเมื่อกลับเข้าสู่เว็บไซต์ ข้อมูลของคุณจะไม่ถูกจัดเก็บบนเซิร์ฟเวอร์");
 }
 
 function loadData(){
@@ -426,12 +514,14 @@ function loadData(){
   ot30h.value=d.ot30h;
   ot30m.value=d.ot30m;
 
-  // ✅ โหลดรายการหัก
+  // โหลดรายการหัก
   socialRateInput.value = d.socialRate;
   deduct10DaysInput.value = d.deduct10Days;
   deduct20DaysInput.value = d.deduct20Days;
   providentRateInput.value = d.providentRate;
-
+  coopInput.value = d.coop || 0;
+  healthMarriageInput.value = d.healthMarriage || 0;
+  healthDentalInput.value = d.healthDental || 0;
   updateAll();
 }
 function clearData(){
