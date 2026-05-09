@@ -1,2 +1,2 @@
-# AAT-calculate-salary-
+# cal-salary-operator
 Calculate salary for operator
