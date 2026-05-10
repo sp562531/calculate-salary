@@ -169,6 +169,53 @@ button:hover {
 .button-group button {
   flex: 1;
 }
+  /*shoppee*/
+.product-card {
+  display: block;
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  text-decoration: none;
+  color: #000;
+  background: #fff;
+  transition: 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.product-card img {
+  width: 100%;
+  display: block;
+}
+
+.product-info {
+  padding: 10px;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.desc {
+  font-size: 11px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.btn {
+  background: #ff5722;
+  color: #fff;
+  text-align: center;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 12px;
+}  
 </style>
 </head>
 
@@ -320,7 +367,29 @@ button:hover {
 </div>
 <div class="sub-text2">โปรแกรมคำนวนนี้ไม่ครอบคลุมรายรับหรือรายการหักทั้งหมด เช่น ภาษี ฌาปนกิจ เงินกู้สหกรณ์ หรือรายการอื่นที่อาจเพิ่มเข้ามาในอนาคต</div>
 </div>
+<a href="https://s.shopee.co.th/1qYkoPsVQO"
+   target="_blank"
+   rel="nofollow noopener noreferrer"
+   class="product-card">
 
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlYlUx21Z5JgTEYlXTgufAopRTvmX_jQYXA5lRsHwkug&s=10"
+       alt="สินค้า">
+
+  <div class="product-info">
+    <div class="title">
+      สินค้าแนะนำจาก Shopee
+    </div>
+
+    <div class="desc">
+      คลิกเพื่อดูรายละเอียดสินค้าเพิ่มเติม
+    </div>
+
+    <div class="btn">
+      🛒 ดูสินค้า
+    </div>
+  </div>
+
+</a>
 </div>
 
 
@@ -416,6 +485,127 @@ unionPay.value = format(union);
 let deductTotal = social + deduct10 + deduct20 + provident + coop + healthMarriage + healthDental + union;
 // สุทธิ
 let net = total - deductTotal;
+
+deductTotalSpan.innerText = format(deductTotal);
+netTotalSpan.innerText = format(net);
+
+}
+
+const salaryInput = document.getElementById("salary");
+const nightDays = document.getElementById("nightDays");
+const skillInput = document.getElementById("skill");
+const bonusInput = document.getElementById("bonus");
+const otherInput = document.getElementById("other");
+
+const diligent = document.getElementById("diligent");
+const socialRateInput = document.getElementById("socialRate");
+const socialPay = document.getElementById("socialPay");
+const deductTotalSpan = document.getElementById("deductTotal");
+const netTotalSpan = document.getElementById("netTotal");
+const ot15h = document.getElementById("ot15h");
+const ot15m = document.getElementById("ot15m");
+const ot20h = document.getElementById("ot20h");
+const ot20m = document.getElementById("ot20m");
+const ot30h = document.getElementById("ot30h");
+const ot30m = document.getElementById("ot30m");
+
+const salaryShow = document.getElementById("salaryShow");
+const nightPaySpan = document.getElementById("nightPay");
+const diligentPaySpan = document.getElementById("diligentPay");
+const skillPay = document.getElementById("skillPay");
+const ot15PaySpan = document.getElementById("ot15Pay");
+const ot20PaySpan = document.getElementById("ot20Pay");
+const ot30PaySpan = document.getElementById("ot30Pay");
+const bonusPay = document.getElementById("bonusPay");
+const otherPay = document.getElementById("otherPay");
+const totalSpan = document.getElementById("total");
+
+const deduct10DaysInput = document.getElementById("deduct10Days");
+const deduct10Pay = document.getElementById("deduct10Pay");
+
+const deduct20DaysInput = document.getElementById("deduct20Days");
+const deduct20Pay = document.getElementById("deduct20Pay");
+const providentRateInput = document.getElementById("providentRate");
+const providentPay = document.getElementById("providentPay");
+const coopInput = document.getElementById("coopInput");
+const coopPay = document.getElementById("coopPay");
+const healthMarriageInput = document.getElementById("healthMarriageInput");
+const healthMarriagePay = document.getElementById("healthMarriagePay");
+
+const healthDentalInput = document.getElementById("healthDentalInput");
+const healthDentalPay = document.getElementById("healthDentalPay");
+
+const unionCheck = document.getElementById("unionCheck");
+const unionPay = document.getElementById("unionPay");
+
+function saveData(){
+  localStorage.setItem("salaryApp",JSON.stringify({
+    salary:salaryInput.value,
+    nightDays:nightDays.value,
+    skill:skillInput.value,
+    bonus:bonusInput.value,
+    other:otherInput.value,
+    diligent:diligent.checked,
+
+    ot15h:ot15h.value,
+    ot15m:ot15m.value,
+    ot20h:ot20h.value,
+    ot20m:ot20m.value,
+    ot30h:ot30h.value,
+    ot30m:ot30m.value,
+
+    socialRate: socialRateInput.value,
+    deduct10Days: deduct10DaysInput.value,
+    deduct20Days: deduct20DaysInput.value,
+    providentRate: providentRateInput.value,
+    coop: coopInput.value,
+    healthMarriage: healthMarriageInput.value,
+    healthDental: healthDentalInput.value,
+  }));
+  alert("บันทึกแล้ว ข้อมูลจะถูกบันทึกไว้ในเบราวเซอร์ของเครื่องคุณ หากคุณไม่ล้างแคช ข้อมูลจะยังคงอยู่และจะปรากฎเมื่อกลับเข้าสู่เว็บไซต์ ข้อมูลของคุณจะไม่ถูกจัดเก็บบนเซิร์ฟเวอร์");
+}
+
+function loadData(){
+  let d=JSON.parse(localStorage.getItem("salaryApp"));
+  if(!d) return;
+
+  salaryInput.value=d.salary;
+  nightDays.value=d.nightDays;
+  skillInput.value=d.skill;
+  bonusInput.value=d.bonus;
+  otherInput.value=d.other;
+  diligent.checked=d.diligent;
+
+  ot15h.value=d.ot15h;
+  ot15m.value=d.ot15m;
+  ot20h.value=d.ot20h;
+  ot20m.value=d.ot20m;
+  ot30h.value=d.ot30h;
+  ot30m.value=d.ot30m;
+
+  // โหลดรายการหัก
+  socialRateInput.value = d.socialRate;
+  deduct10DaysInput.value = d.deduct10Days;
+  deduct20DaysInput.value = d.deduct20Days;
+  providentRateInput.value = d.providentRate;
+  coopInput.value = d.coop || 0;
+  healthMarriageInput.value = d.healthMarriage || 0;
+  healthDentalInput.value = d.healthDental || 0;
+  updateAll();
+}
+function clearData(){
+  if(confirm("ล้างข้อมูลทั้งหมด?")){
+    localStorage.removeItem("salaryApp");
+    location.reload();
+  }
+}
+
+window.onload=loadData;
+</script>
+
+</body>
+</html>
+t = total - deductTotal;
 
 deductTotalSpan.innerText = format(deductTotal);
 netTotalSpan.innerText = format(net);
