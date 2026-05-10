@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คำนวณดอกเบี้ยสหกรณ์</title>
+
+<style>
+body {
+  font-family: sans-serif;
+  background: #f5f5f5;
+  padding: 10px;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  background: #fff;
+  padding: 15px;
+  border-radius: 12px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 70px 1fr 90px;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+  padding-left: 19px;
+}
+
+.label {
+  font-size: 15px;
+}
+
+input {
+  padding: 9px;
+  font-size: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  width: 100%;
+  box-sizing: border-box;
+}
+  
+.input-hint {
+  grid-column: 2 / 4;
+  font-size: 10px;
+  color: #777;
+  margin-top: 2px;
+  padding-left: 2px;
+}
+  
+.result-input {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  color: #2e7d32;
+  font-weight: 500;
+  background: #f9f9f9;
+}
+
+/* ปุ่ม */
+.button-wrap {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-top: 12px;
+}
+
+.button-wrap button {
+  width: 130px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.calc { background:#4CAF50; color:#fff; }
+.clear { background:#f44336; color:#fff; }
+
+/* สรุป */
+.total {
+  margin-top: 12px;
+  font-size: 18px;
+  text-align: center;
+  font-weight: bold;
+}
+  /*shoppee*/
+.product-card {
+  display: block;
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  text-decoration: none;
+  color: #000;
+  background: #fff;
+  transition: 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.product-card img {
+  width: 100%;
+  display: block;
+}
+
+.product-info {
+  padding: 10px;
+}
+
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.desc {
+  font-size: 11px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.btn {
+  background: #ff5722;
+  color: #fff;
+  text-align: center;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>คำนวณดอกเบี้ย</h2>
+
+<!-- แถว 1 -->
+<div class="row">
+  <div class="label">เงินต้น</div>
+  <input type="number" id="principal">
+
+</div>
+
+<!-- แถว 2 -->
+<div class="row">
+  <div class="label">ดอกเบี้ย</div>
+  <input type="number" id="rate" placeholder="%">
+</div>
+
+<!-- แถว 3 -->
+<div class="row">
+  <div class="label">จำนวนวัน</div>
+  <input type="number" id="days">
+  <div class="input-hint">
+  สำหรับงวดแรก จำนวนวันนับตั้งแต่วันที่อนุมัติหรือออกเช็คจนถึงวันที่จ่ายงวด และงวดถัดไปคือจำนวนวันของเดือนนั้น
+เช่น เดือนมีนาคมเท่ากับ 31 เดือนเมษายนเท่ากับ 30 </div>
+</div>
+
+
+<!-- แถว 4 -->
+<div class="row">
+  <div class="label">ค่างวด</div>
+  <input type="number" id="installment">
+</div>
+
+<!-- ปุ่ม -->
+<div class="button-wrap">
+  <button class="clear" onclick="clearData()">ล้าง</button>
+   <button class="calc" onclick="calculate()">คำนวณ</button>
+</div>
+
+<!-- ผลลัพธ์ -->
+<div class="total">
+ดอกเบี้ย: <span id="interestResult">0</span>
+</div>
+
+<div class="total">
+ยอดรวม: <span id="totalResult">0</span>
+</div>
+  
+<a href="https://s.shopee.co.th/1qYkoPsVQO"
+   target="_blank"
+   rel="nofollow noopener noreferrer"
+   class="product-card">
+
+  <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQlYlUx21Z5JgTEYlXTgufAopRTvmX_jQYXA5lRsHwkug&s=10"
+       alt="สินค้า">
+
+  <div class="product-info">
+    <div class="title">
+      สินค้าแนะนำจาก Shopee
+    </div>
+
+    <div class="desc">
+      คลิกเพื่อดูรายละเอียดสินค้าเพิ่มเติม
+    </div>
+
+    <div class="btn">
+      🛒 ดูสินค้า
+    </div>
+  </div>
+
+</a>
+  
+</div>
+
+<script>
+function format(n){
+  return Number(n).toLocaleString("th-TH",{
+    minimumFractionDigits:2,
+    maximumFractionDigits:2
+  });
+}
+
+function calculate(){
+  let principal = +document.getElementById("principal").value || 0;
+  let rate = +document.getElementById("rate").value || 0;
+  let days = +document.getElementById("days").value || 0;
+  let installment = +document.getElementById("installment").value || 0;
+
+  // สูตรใหม่
+  let totalInterest = principal * rate/100;
+  let perDay = totalInterest / 365;
+  let interest = perDay * days;
+
+  // ปัด 2 ตำแหน่ง
+  interest = Number(interest.toFixed(2));
+
+  let total = installment + interest;
+
+  document.getElementById("interestResult").innerText = format(interest);
+  document.getElementById("totalResult").innerText = format(total);
+}
+
+function clearData(){
+  document.querySelectorAll("input").forEach(i => i.value = "");
+  document.getElementById("interestResult").innerText = "0";
+  document.getElementById("totalResult").innerText = "0";
+}
+</script>
+
+</body>
+</html>
