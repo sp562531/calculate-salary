@@ -586,7 +586,7 @@ function saveData(){
     coop: coopInput.value,
     healthMarriage: healthMarriageInput.value,
     healthDental: healthDentalInput.value,
-    unionCheck: unionCheck.Checked,
+    unionCheck: unionCheck.checked,
   }));
   alert("บันทึกแล้ว ข้อมูลจะถูกบันทึกไว้ในเบราวเซอร์ของเครื่องคุณ หากคุณไม่ล้างแคช ข้อมูลจะยังคงอยู่และจะปรากฎเมื่อกลับเข้าสู่เว็บไซต์ ข้อมูลของคุณจะไม่ถูกจัดเก็บบนเซิร์ฟเวอร์");
 }
@@ -617,7 +617,7 @@ function loadData(){
   coopInput.value = d.coop || 0;
   healthMarriageInput.value = d.healthMarriage || 0;
   healthDentalInput.value = d.healthDental || 0;
-  unionCheck,checked = d.unionCheck || false;
+  unionCheck.checked = d.unionCheck || false;
   updateAll();
 }
 function clearData(){
