@@ -216,6 +216,7 @@ button:hover {
   border-radius: 6px;
   font-size: 12px;
 }
+  /*menu*/
 .menu-card a {
   display: block;
   margin-top: 12px;
@@ -231,6 +232,7 @@ button:hover {
 }
 
 .menu-card a:hover {
+  color: #4CAF50;
   transform: translateY(-3px);
   box-shadow: 0 6px 14px rgba(0,0,0,0.1);
 }
@@ -246,7 +248,7 @@ button:hover {
 
 <div class="row">
   <div class="label">เงินเดือน</div>
-  <input type="number" id="salary" oninput="updateAll()">
+  <input type="number" id="salary" placeholder="กรอกข้อมูลที่นี่" oninput="updateAll()">
   <input class="result-input" id="salaryShow" disabled>
 </div>
 
@@ -331,14 +333,14 @@ button:hover {
 <!-- หัก 10% -->
 <div class="row">
   <div class="label">จ่าย 90% </div>
-  <input type="number" id="deduct10Days" placeholder="วัน" oninput="updateAll()">
+  <input type="number" id="deduct10Days" placeholder="จำนวนวัน" oninput="updateAll()">
   <input class="result-input" id="deduct10Pay" disabled>
 </div>
 
 <!-- หัก 20% -->
 <div class="row">
   <div class="label">จ่าย 80% </div>
-  <input type="number" id="deduct20Days" placeholder="วัน" oninput="updateAll()">
+  <input type="number" id="deduct20Days" placeholder="จำนวนวัน" oninput="updateAll()">
   <input class="result-input" id="deduct20Pay" disabled>
 </div>
 
@@ -584,6 +586,7 @@ function saveData(){
     coop: coopInput.value,
     healthMarriage: healthMarriageInput.value,
     healthDental: healthDentalInput.value,
+    unionCheck: unionCheck.Checked,
   }));
   alert("บันทึกแล้ว ข้อมูลจะถูกบันทึกไว้ในเบราวเซอร์ของเครื่องคุณ หากคุณไม่ล้างแคช ข้อมูลจะยังคงอยู่และจะปรากฎเมื่อกลับเข้าสู่เว็บไซต์ ข้อมูลของคุณจะไม่ถูกจัดเก็บบนเซิร์ฟเวอร์");
 }
@@ -614,6 +617,7 @@ function loadData(){
   coopInput.value = d.coop || 0;
   healthMarriageInput.value = d.healthMarriage || 0;
   healthDentalInput.value = d.healthDental || 0;
+  unionCheck,checked = d.unionCheck || false;
   updateAll();
 }
 function clearData(){
