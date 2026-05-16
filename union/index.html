@@ -1,39 +1,352 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>คำนวณดอกเบี้ยสหกรณ์</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณดอกเบี้ยเงินกู้</title>
 
-<style>
-body {
-  font-family: sans-serif;
-  background: #f5f5f5;
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #4CAF50;
+            --danger-color: #f44336;
+            --bg-color: #f8f9fa;
+            --table-border: #e0e0e0;
+        }
+
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: var(--bg-color); 
+            padding: 10px;
+            color: #333;
+        }
+
+        .container { 
+            max-width: 700px; 
+            margin: auto; 
+            background: #fff; 
+            padding: 20px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05); 
+        }
+
+        h2 { text-align: center; color: var(--primary-color); margin-bottom: 25px; }
+
+        .row { display: grid; grid-template-columns: 120px 1fr; align-items: center; gap: 10px; margin-top: 12px; }
+        .label { font-size: 14px; font-weight: 600; color: #555; }
+        
+        input, select { 
+            padding: 12px; 
+            font-size: 15px; 
+            border-radius: 8px; 
+            border: 1px solid #ddd; 
+            width: 100%; 
+            box-sizing: border-box;
+            transition: border 0.3s;
+        }
+
+        input:focus { border-color: var(--secondary-color); outline: none; }
+
+        .hint {
+            grid-column: 2;
+            font-size: 10px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        .button-wrap { display: flex; justify-content: center; gap: 15px; margin: 30px 0; }
+        button { 
+            flex: 1;
+            max-width: 150px;
+            padding: 12px; 
+            border: none; 
+            border-radius: 8px; 
+            font-size: 15px; 
+            font-weight: bold;
+            cursor: pointer; 
+            transition: 0.3s transform, 0.3s background; 
+        }
+
+        button:active { transform: scale(0.98); }
+        .calc { background: var(--secondary-color); color: #fff; }
+        .calc:hover { background: #388e3c; }
+        .clear { background: #eee; color: #666; }
+        .clear:hover { background: #ddd; }
+
+        /* --- ปรับปรุงตารางใหม่ --- */
+        .table-container { 
+            width: auto; 
+            overflow-x: auto; 
+            margin-top: 25px; 
+            margin-left: -15px;  /* ขยายทะลุขอบซ้ายออกไป 50px */
+            margin-right: -15px; /* ขยายทะลุขอบขวาออกไป 50px */
+            border-radius: 10px;
+            border: 1px solid var(--table-border);
+            max-height: 600px; /* จำกัดความสูงให้เลื่อนดูได้ */
+            overflow-y: auto;
+        }
+
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        
+        th { 
+            background: var(--primary-color); 
+            color: white; 
+            padding: 12px 12px; 
+            position: sticky; 
+            top: 0; 
+            z-index: 5;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+        }
+th.text-center {
+    text-align: center;
+}
+        td { padding: 10px 0px; border-bottom: 1px solid #eee; font-size: 12px; text-align: right; }
+        .text-center { text-align: center; }
+
+        /* สีตัวเลข */
+        td:nth-child(3) { color: #1565c0; font-weight: 500; padding:10px; } /* เงินต้น */
+        td:nth-child(4) { color: var(--primary-color); padding:8px} /* ดอกเบี้ย */
+        td:nth-child(5) { color: var(--danger-color); padding:10px} 
+
+        tr:nth-child(even) { background-color: #fafafa; }
+        tr:hover { background-color: #f1f8e9; }
+
+        .summary-row { 
+            background-color: var(--primary-color) !important; 
+            color: #fff !important; 
+            font-weight: bold; 
+        }
+        .summary-row td { color: #fff !important; font-size: 15px; }
+
+        /* Affiliate Card */
+.product-card {
+  display: block;
+  margin-top: 20px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #eee;
+  text-decoration: none;
+  color: #000;
+  background: #fff;
+  transition: 0.2s;
+}
+
+.product-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+
+.product-card img {
+  width: 100%;
+  display: block;
+}
+
+.product-info {
   padding: 10px;
 }
 
-.container {
-  max-width: 420px;
-  margin: auto;
-  background: #fff;
-  padding: 15px;
-  border-radius: 12px;
+.title {
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 4px;
 }
 
-h2 {
+.desc {
+  font-size: 11px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.btn {
+  background: #ff5722;
+  color: #fff;
   text-align: center;
+  padding: 6px;
+  border-radius: 6px;
+  font-size: 12px;
+}
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>📊 คำนวณดอกเบี้ยเงินกู้</h2>
+
+    <div class="row">
+        <div class="label">เงินต้น (บาท)</div>
+        <input type="number" id="principal">
+    </div>
+
+    <div class="row">
+        <div class="label">ดอกเบี้ย (%) ต่อปี</div>
+        <input type="number" id="rate"  step="0.01">
+    </div>
+
+    <div class="row">
+        <div class="label">ค่างวด (บาท)</div>
+        <input type="number" id="installment">
+    </div>
+
+    <div class="row">
+        <div class="label">จำนวนวันงวดแรก</div>
+        <input type="number" id="firstDays">
+    </div>
+    <div class="row" style="margin-top: 0;">
+        <div></div>
+        <div class="hint">นับจากวันที่อนุมัติหรือออกเช็คจนถึงวันที่สิ้นเดือนของงวดแรก เช่น ออกเช็ควันที่ 24 มีนาคม จ่ายงวดแรก 30 เมษายน เท่ากับ 38 วัน</div>
+    </div>
+    
+    <div class="row">
+        <div class="label">เริ่มเดือนแรก</div>
+        <select id="startMonth">
+            <option value="0">มกราคม</option>
+            <option value="1">กุมภาพันธ์</option>
+            <option value="2">มีนาคม</option>
+            <option value="3">เมษายน</option>
+            <option value="4">พฤษภาคม</option>
+            <option value="5">มิถุนายน</option>
+            <option value="6">กรกฎาคม</option>
+            <option value="7">สิงหาคม</option>
+            <option value="8">กันยายน</option>
+            <option value="9">ตุลาคม</option>
+            <option value="10">พฤศจิกายน</option>
+            <option value="11">ธันวาคม</option>
+        </select>
+    </div>
+
+    <div class="button-wrap">
+        <button class="clear" onclick="clearData()">ล้างข้อมูล</button>
+        <button class="calc" onclick="calculate()">คำนวณ</button>
+    </div>
+
+    <div class="table-container">
+        <table id="resultTable">
+            <thead>
+  <tr>
+   <th width="8%">งวด</th>
+   <th width="20%">เดือน</th>
+   <th width="31%">เงินต้น</th>
+   <th width="15%">ดอกเบี้ย</th>
+   <th width="26%">ยอดชำระ</th>
+   </tr>
+ </thead>
+
+            <tbody id="tableBody">
+                <!-- Data will be inserted here -->
+            </tbody>
+        </table>
+    </div>
+    <div id="randomProduct"></div>
+</div>
+
+<script>
+const monthNames = ["มกราคม", "กุมภาพันธ์", "มีนาคม", "เมษายน", "พฤษภาคม", "มิถุนายน", "กรกฎาคม", "สิงหาคม", "กันยายน", "ตุลาคม", "พฤศจิกายน", "ธันวาคม"];
+const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+
+function format(n) {
+    return Number(n).toLocaleString("th-TH", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
 }
 
-.row {
-  display: grid;
-  grid-template-columns: 70px 1fr 90px;
-  align-items: center;
-  gap: 6px;
-  margin-top: 15px;
-  padding-left: 19px;
+function calculate() {
+    let principal = parseFloat(document.getElementById("principal").value) || 0;
+    const rate = parseFloat(document.getElementById("rate").value) || 0;
+    const installmentInput = parseFloat(document.getElementById("installment").value) || 0;
+    const firstDays = parseInt(document.getElementById("firstDays").value) || 0;
+    let currentMonthIndex = parseInt(document.getElementById("startMonth").value);
+
+    const tableBody = document.getElementById("tableBody");
+    tableBody.innerHTML = ""; 
+
+    if (principal <= 0 || installmentInput <= 0) {
+        alert("กรุณากรอกเงินต้นและค่างวดให้ถูกต้อง");
+        return;
+    }
+
+    let count = 1;
+    let totalInterest = 0;
+    
+    while (principal > 0) {
+        let days;
+        if (count === 1) {
+            days = firstDays;
+        } else {
+            const year = new Date().getFullYear(); 
+            // เช็คปีอธิกสุรทิน (Leap Year)
+            if (currentMonthIndex === 1 && ((year % 4 === 0 && year % 100 !== 0) || year % 400 === 0)) {
+                days = 29;
+            } else {
+                days = daysInMonth[currentMonthIndex];
+            }
+        }
+
+        let interest = (principal * (rate / 100) / 365) * days;
+        interest = Math.round(interest * 100) / 100;
+        totalInterest += interest;
+
+        let currentInstallment = installmentInput;
+        // ถ้ายอดหนี้น้อยกว่าค่างวด ให้จ่ายเท่าที่เหลือ
+        if (principal < currentInstallment) {
+            currentInstallment = principal;
+        }
+         let totalPayment = currentInstallment + interest;
+        let row = `<tr>
+    <td class="text-center">${count}</td>
+    <td class="text-center">${monthNames[currentMonthIndex]}</td>
+    <td>${format(principal)}</td>
+    <td>${format(interest)}</td>
+    <td>${format(totalPayment)}</td>
+        </tr>`;
+        
+        tableBody.innerHTML += row;
+
+        principal -= currentInstallment;
+        currentMonthIndex = (currentMonthIndex + 1) % 12;
+        count++;
+
+        if (count > 600) break; // ป้องกัน Loop ค้างถ้ากรอกข้อมูลผิด
+    }
+
+    let footerRow = `<tr class="summary-row">
+<td colspan="4" style="text-align: left; padding-left: 15px;">รวมดอกเบี้ยทั้งหมด</td>
+<td style="text-align: right; padding-right: 10px;">${format(totalInterest)}</td>
+</tr>`;
+
+    tableBody.innerHTML += footerRow;
 }
 
-.label {
+function clearData() {
+    document.querySelectorAll("input").forEach(i => i.value = "");
+    document.getElementById("tableBody").innerHTML = "";
+}
+
+// ฟังก์ชันจำลองสินค้า Affiliate (ถ้ามีไฟล์ affiliate.js จะดึงจากไฟล์นั้น)
+function renderRandomProduct() {
+    if (typeof getRandomProduct === 'function') {
+        const p = getRandomProduct();
+        document.getElementById("randomProduct").innerHTML = `
+            <a href="${p.url}" target="_blank" class="product-card">
+      <img src="${p.img}">
+      <div class="product-info">
+        <div class="title">${p.title}</div>
+        <div class="desc">คลิกเพื่อดูรายละเอียด</div>
+        <div class="btn">🛒 ดูสินค้า</div>
+      </div>
+    </a>
+        `;
+    }
+}
+
+window.onload = renderRandomProduct;
+</script>
+<script src="../affiliate.js"></script>
+</body>
+</html>
   font-size: 15px;
 }
 
